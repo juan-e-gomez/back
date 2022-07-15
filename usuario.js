@@ -7,7 +7,7 @@ class Usuario {
     }
     
     getFullName() {
-        let fullname = this.nombre + " " + this.apellido
+        let fullname = `${this.nombre} ${this.apellido}`
         console.log(fullname)
     }
 
@@ -17,6 +17,7 @@ class Usuario {
 
     countMascotas() {
         let count = this.mascotas.length
+        console.log(count)
     }
 
     addBook(nombre, autor) {
