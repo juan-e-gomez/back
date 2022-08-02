@@ -78,23 +78,29 @@ router.put('/:id', (req, res) => {
 });
 
 
-router.delete('/delete/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
     let id = req.params.id;
     let parsedId = parseInt(id);
-    
-
-    if(!deleteProduct) return res.status(404).send('El producto no existe');
-    let deleteById = async(deleteProduct) => {
+    let deleteProduct = async(parsedId) => {
         try{
             let contenedor = new Contenedor();
-            await contenedor.deleteById(parsedId);
-            res.send(deleteProduct);
-        }catch(error){
+            let items = await contenedor.getAll();
+            let index = items.findIndex(p => p.id === parsedId);
+            if(index>-1){
+                items.splice(index, 1);
+                await contenedor.save(items);
+                res.send('Producto eliminado');
+            }else{
+                res.send('Producto no encontrado');
+            }
+        } catch(error){
             console.log(error);
         }
     }
-    deleteById(deleteProduct);
-});
+    deleteProduct(parsedId);
+}
+);
+
 
 router.delete('/deleteAll', (req, res) => {
     let deleteAll = async() => {
