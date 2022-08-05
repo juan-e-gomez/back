@@ -1,0 +1,12 @@
+<% typeof products != 'undefined' ? products : [] %> 
+<% if (products.length>0) { %>
+    <% products.forEach(product => { %>
+        <div style="align-items: center;display: flex;justify-content: center;align-content: space-between;flex-direction: column; margin:30px"">
+            <p style="font-weight:bold" ><%= product.title %></p>
+            <p><%= product.description %></p>
+            <p>U$S <%= product.price %></p>
+        </div>
+    <% }); %>
+<% } %>
+<!--  -->
+<!--  -->

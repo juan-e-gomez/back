@@ -1,8 +1,18 @@
 import fs from 'fs';
+import __dirname from './utils.js';
 
-const path = '../products.json';
 
-class Contenedor {
+const path = __dirname + '/products.json';
+const products = JSON.parse(fs.readFileSync(path, 'utf8'));
+    
+
+console.log(products+' desde contenedor');
+
+export default class Contenedor {
+
+    constructor() {
+        this.path = path;
+    }
 
     getAll = async() => {
         try{
@@ -16,24 +26,21 @@ class Contenedor {
         }catch(error){
             console.log(error);
         }
-    }
+    };
 
     save = async(item) => {
-        try{
-            let items = await this.getAll();
-            if(items.length===0){
-                item.id=1;
-                items.push(item);
-                await fs.promises.writeFile(path, JSON.stringify(items, null, '\t'));
-            }else{
-                item.id = items[items.length-1].id+1;
-                items.push(item);
-                await fs.promises.writeFile(path, JSON.stringify(items, null, '\t'));
-            }
-        }catch(error){
-            console.log(error);
+        let items = await this.getAll();
+        if(items.length > 0){
+            item.id = items[items.length-1].id + 1;
+        }else{
+            item.id = 1;
         }
-    }       
+        items.push(item);
+        let content = JSON.stringify(items);
+        await fs.promises.writeFile(path, content, 'utf-8');
+        return item;
+        
+    };
 
     modify = async(item) => {
         try{
@@ -85,13 +92,11 @@ class Contenedor {
 
     deleteAll = async() => {
         try{
-            await fs.promises.writeFile(path, JSON.stringify([], null, '\t'));
-        }catch(error){
-            console.log(error);
+            let items = await this.getAll();
+            items = [];
+            await fs.promises.writeFile(path, JSON.stringify(items, null, '\t'));
+        } catch(error){
+            console.log
         }
     }
 }
-
-
-
-export default Contenedor;

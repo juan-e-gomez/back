@@ -20,9 +20,10 @@ h1 {
     color: #ffffff;
     background-color: #007c25;
     padding: 0.5em;
+    font-weight: 300;
 }
 
-form {
+form, #table-container {
     text-align: center;
     margin-top: 1em;
 }

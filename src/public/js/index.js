@@ -1,52 +1,34 @@
 
-let productform = document.getElementById('product-form');
 
-const handleSubmit = (evt,form,route) => {
-    evt.preventDefault();
-    let formdata = new FormData(form);
-    let obj = {};
-    formdata.forEach((value,key) => obj[key] = value);
-    
-    fetch(route, {
-        method: 'POST',
-        body: JSON.stringify(obj),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }).then(res => res.json())
+let allitemsform = document.getElementById('delete-all-items-form');
+
+allitemsform.addEventListener('submit', (e) => {
+    e.preventDefault();
+    fetch('/products', {
+        method: 'DELETE'
+    })
     .then(data => {
         console.log(data);
     }
     )
-    .catch(error => console.log(error));
 }
-
-productform.addEventListener('submit',(e) => handleSubmit(e,e.target,'/products'));
-
+);
 
 
-let deleteItemBox = document.getElementById('delete-item-box');
 
 
-const deleteItem = (evt,route) => {
-    evt.preventDefault();
-    let formdata = new FormData(deleteItemBox);
-    let obj = {};
-    formdata.forEach((value,key) => obj[key] = value);
-    
-    fetch(route, {
-        method: 'DELETE',
-        body: JSON.stringify(obj),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }).then(res => res.json())
+let deleteitemform = document.getElementById('delete-item-form');
+
+deleteitemform.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let id = document.getElementById('delete-item-id')
+    let parsedId = parseInt(id.value);
+    fetch(`/products/${parsedId}`, {
+        method: 'DELETE'
+    })
     .then(data => {
         console.log(data);
     }
     )
-    .catch(error => console.log(error));
 }
-
-
-deleteItemBox.addEventListener('submit',(e) => deleteItem(e,'/products/'+e.target.elements.id.value));
+);

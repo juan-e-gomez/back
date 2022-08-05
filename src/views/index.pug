@@ -1,0 +1,33 @@
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        link(type="text/css" href="/style.css")
+    title="Curso de backend"
+    body 
+    div
+        h1="Bienvenidos"
+        form(id="product-form")
+            input(type="text" name="title" placeholder="Titulo")
+            input(type="text" name="price" placeholder="Precio")
+            input(type="text" name="description" placeholder="Descripcion")
+            input(type="submit" value="Enviar")
+        form
+    div
+    div(style="align-items: center; display: flex; justify-content: center;")
+        form(id="delete-item-box")
+            input(type="number" name="id" placeholder="ID")
+            input(type="submit" value="Eliminar")
+        form
+    div
+    div
+        span
+        span
+    div
+
+script(src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js")
+script(src="/js/index.js" type='text/javascript')
+
+body
+html

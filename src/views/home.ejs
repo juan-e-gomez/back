@@ -1,0 +1,22 @@
+<%- include('./partials/head')  %> 
+
+<body>
+    <div>
+        <h1>Bienvenidos</h1>
+        <%- include('./form')  %> 
+    </div>
+    <div style="align-items: center; display: flex; justify-content: center;">
+        <form id="delete-item-form">
+            <input type="number" id="delete-item-id" placeholder="ID">
+            <input type="submit" value="Eliminar">
+        </form>
+    </div>
+    <div style="align-items: center; display: flex; justify-content: center;">
+        <form id="delete-all-items-form">
+            <input type="submit" value="Eliminar todos">
+        </form>
+    </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+<script src="js/index.js"></script>
+
+</body>

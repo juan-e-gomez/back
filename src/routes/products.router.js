@@ -4,7 +4,9 @@ import Contenedor from '../contenedor.js';
 
 const require = createRequire(import.meta.url);
 const router = Router();
-const products = require('../../products.json');
+const products = require('../products.json');
+
+console.log(products);
 
 router.get('/', (req, res) => {
     let getAll = async() => {
@@ -44,16 +46,26 @@ router.post('/', (req, res) => {
         price: req.body.price,
         description: req.body.description,
     }
+    let newItem = async() => {
+        try{
+            let contenedor = new Contenedor();
+            let item = await contenedor.save(newProduct);
+            res.send(item);
+        }
+        catch(error){
+            res.send('Error al guardar el producto');
+        }
+    }
+    res.render('products/new', {
+        product: newProduct
+    });
+    newItem();
+}
 
-    if(newProduct.title && newProduct.price && newProduct.description){
-        let contenedor = new Contenedor();
-        contenedor.save(newProduct);
-        res.send(newProduct);
-    }
-    else{
-        res.send("Error: Faltan datos");
-    }
-});
+);
+
+    
+
 
 router.put('/:id', (req, res) => {
     let id = req.params.id;
@@ -87,13 +99,12 @@ router.delete('/:id', (req, res) => {
             let items = await contenedor.getAll();
             let index = items.findIndex(p => p.id === parsedId);
             if(index>-1){
-                items.splice(index, 1);
-                await contenedor.save(items);
+                await contenedor.deleteById(parsedId);
                 res.send('Producto eliminado');
             }else{
                 res.send('Producto no encontrado');
             }
-        } catch(error){
+        }catch(error){
             console.log(error);
         }
     }
@@ -102,12 +113,13 @@ router.delete('/:id', (req, res) => {
 );
 
 
-router.delete('/deleteAll', (req, res) => {
+router.delete('/', (req, res) => {
     let deleteAll = async() => {
         try{
             let contenedor = new Contenedor();
             await contenedor.deleteAll();
             res.send('Todos los productos fueron eliminados');
+            console.log('Todos los productos fueron eliminados');
         }
         catch(error){
             console.log(error);
