@@ -6,8 +6,6 @@ const require = createRequire(import.meta.url);
 const router = Router();
 const products = require('../products.json');
 
-console.log(products);
-
 router.get('/',(req,res)=>{
     res.render('home.ejs',{
         products:products

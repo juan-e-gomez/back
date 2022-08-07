@@ -6,7 +6,7 @@ const require = createRequire(import.meta.url);
 const router = Router();
 const products = require('../products.json');
 
-console.log(products);
+//console.log(products);
 
 router.get('/', (req, res) => {
     let getAll = async() => {
@@ -44,8 +44,8 @@ router.post('/', (req, res) => {
         id: parsedId,
         title: req.body.title,
         price: req.body.price,
-        description: req.body.description,
-    }
+        description: req.body.description
+    };
     let newItem = async() => {
         try{
             let contenedor = new Contenedor();
@@ -56,15 +56,9 @@ router.post('/', (req, res) => {
             res.send('Error al guardar el producto');
         }
     }
-    res.render('products/new', {
-        product: newProduct
-    });
     newItem();
 }
-
 );
-
-    
 
 
 router.put('/:id', (req, res) => {

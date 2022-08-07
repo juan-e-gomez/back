@@ -3,10 +3,6 @@ import __dirname from './utils.js';
 
 
 const path = __dirname + '/products.json';
-const products = JSON.parse(fs.readFileSync(path, 'utf8'));
-    
-
-console.log(products+' desde contenedor');
 
 export default class Contenedor {
 

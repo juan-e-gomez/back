@@ -15,29 +15,39 @@
         let price = productform.price.value;
         let description = productform.description.value;
 
-        fetch('/products', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                title,
-                price,
-                description
+        if(title.length > 0 && price.length > 0 && description.length > 0) {
+            fetch('/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title,
+                    price,
+                    description
+                })
             })
-        })
-        .then(res => 
-            res.json()
-        )
-        .then(data => {
-            console.log(data);
-            productform.reset();
-            href = '/';
-        })
-        .catch(err => {
-            console.log(err);
+            .then(res => 
+                res.json()
+            )
+            .then(data => {
+                console.log(data);
+                productform.title.value = '';
+                productform.price.value = '';
+                productform.description.value = '';
+                socket.emit('products', data);
+                document.getElementById('history').innerHTML = '';
+                document.getElementById('history').innerHTML = data;
+
+                
+            }).catch(err => {
+                console.log(err);
+            }
+            );
+        } else  {
+            alert('Todos los campos son obligatorios');
         }
-        );
     }
     );
+
 </script>
