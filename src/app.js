@@ -24,27 +24,35 @@ app.use(express.json());
 const products = require('./products.json');
 console.log(products);
 
+const messages = [
+    { author : 'John', message : 'Hello' },
+    { author : 'Mary', message : 'Hi' },
+    { author : 'Peter', message : 'How are you?' },
+];
+
 httpServer.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
 
-io.on('connection', (socket) => {
-    console.log('New user connected (from server)');
+io.on('connection', function(socket) {
+    console.log('User connected');
+    socket.emit('messages', messages);
+
+    socket.on('new-message', data => {
+        messages.push(data);
+        io.sockets.emit('messages', messages);
+    }
+    );
+
     socket.emit('products', products);
-    socket.on('acknowledge', (data) => {
-        console.log(data);
+
+    socket.on('new-product', data => {
+        products.push(data);
+        io.sockets.emit('products', products);
     }
     );
-    socket.on('product', (data) => {
-        console.log(data);
-    }
-    );
-    socket.on('disconnect', () => {
-        console.log('User disconnected (from server)');
-    }
-    );
-}
-);
+    
+});
 
 app.set('views', __dirname+'/views');
 app.set('view engine', 'ejs');
@@ -64,7 +72,6 @@ app.get('/', (req, res) => {
     res.send(products);
 }
 );
-
 
 app.get("/products", (req, res) => {
     res.send(products);

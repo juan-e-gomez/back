@@ -16,26 +16,70 @@
             <input type="submit" value="Eliminar todos">
         </form>
     </div>
+    <div>
+        <form onsubmit="return addMessage(this)">
+            <input type="text" id="username" placeholder="Your name">
+            <input type="text" id="texto" placeholder="Message">
+            <input type="submit" value="Enviar">
+        </form>
+    </div>
+    <div id="messages">
+
+    </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
 <script src="js/index.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script>    
-    const socket = io();
+    const socket = io.connect();
 
-    socket.on('connection', (socket) => {
-        console.log('New user connected (from client)');
-        socket.on('products', data => {
-            console.log(data+'desde socket');
-        });
-        socket.on('acknowledge', data => {
-            console.log(data);
-        });
-        socket.on('disconnect', () => {
-            console.log('User disconnected (from client)');
-        }
-        );
+    function render (data) {
+        const html = data.map((elem, index) => {
+            return (`<div>
+                <strong>${elem.author}</strong>:
+                <em>${elem.message}</em></div>`)
+            }).join('');
+        document.getElementById('messages').innerHTML = html;
+    }
+
+    socket.on('messages', function(data) {
+        render(data);
     });
+
+
+    function renderProductList (data) {
+        const html = products.map((elem, index) => {
+            return (`<div style="width:100%;align-items: center;display: flex;justify-content: center;align-content: space-between;flex-direction: column; margin:30px">
+                <ul id="history">
+                    <li style="color: grey">ID: ${elem.id}</li>
+                    <li style="font-weight: bold">Título: ${elem.title}</li>
+                    <li>Precio: U$S ${elem.price}</li>
+                    <li>Descripción: ${elem.description}</li>
+                </ul>
+            </div>`)
+            }).join('');
+        document.getElementById('history').innerHTML = html;
+
+        
+    }
+
+
+
+    function addMessage(e) {
+        const mensaje = {
+            author: document.getElementById('username').value,
+            text: document.getElementById('texto').value
+        };
+        socket.emit('new-message', mensaje);
+        return false;
+    }
+    
+    function addProduct(e) {
+        socket.emit('new-product', newProduct);
+        return false;
+
+    }
+        
 </script>
 
 </body>

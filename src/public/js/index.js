@@ -1,3 +1,5 @@
+import { Socket } from "socket.io";
+
 let allitemsform = document.getElementById('delete-all-items-form');
 
 allitemsform.addEventListener('submit', (e) => {
@@ -6,9 +8,17 @@ allitemsform.addEventListener('submit', (e) => {
         method: 'DELETE'
     })
     .then(data => {
-        console.log(data);
-    })
-});
+        if (data.status === 200)
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+    }).catch(err => {
+        console.log(err);
+    }
+    );
+}
+);
+
 
 let deleteitemform = document.getElementById('delete-item-form');
 
@@ -20,8 +30,17 @@ deleteitemform.addEventListener('submit', (e) => {
         method: 'DELETE'
     })
     .then(data => {
-        console.log(data);
-    })
-});
+        if (data.status === 200) {
+            setTimeout(() => {
+                window.location.reload();
+            }
+            , 1000);
+        }
+    }).catch(err => {
+        console.log(err);
+    }
+    );
+}
+);
 
 
