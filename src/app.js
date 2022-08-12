@@ -31,9 +31,9 @@ console.log(carts);
 
 
 const messages = [
-    { author : 'John', text : 'Hello' },
-    { author : 'Mary', text : 'Hi' },
-    { author : 'Peter', text : 'How are you?' },
+    { author : 'john@gmail.com', text : 'Hello' },
+    { author : 'mary@gmail.com', text : 'Hi' },
+    { author : 'peter@gmail.com', text : 'How are you?' },
 ];
 
 httpServer.listen(port, () => {
