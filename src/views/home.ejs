@@ -18,7 +18,7 @@
     </div>
     <div>
         <form onsubmit="return addMessage(this)">
-            <input type="text" id="username" placeholder="Your name">
+            <input type="email" id="email" placeholder="Email">
             <input type="text" id="texto" placeholder="Message">
             <input type="submit" value="Enviar">
         </form>
@@ -33,11 +33,14 @@
 <script>    
     const socket = io.connect();
 
+    let currenttime = new Date();
+
     function render (data) {
         const html = data.map((elem, index) => {
             return (`<div>
                 <strong>${elem.author}</strong>:
-                <em>${elem.message}</em></div>`)
+                <em>${currenttime.getHours()}:${currenttime.getMinutes()}:${currenttime.getSeconds()}</em>
+                <em>${elem.text}</em></div>`)
             }).join('');
         document.getElementById('messages').innerHTML = html;
     }
@@ -46,38 +49,13 @@
         render(data);
     });
 
-
-    function renderProductList (data) {
-        const html = products.map((elem, index) => {
-            return (`<div style="width:100%;align-items: center;display: flex;justify-content: center;align-content: space-between;flex-direction: column; margin:30px">
-                <ul id="history">
-                    <li style="color: grey">ID: ${elem.id}</li>
-                    <li style="font-weight: bold">Título: ${elem.title}</li>
-                    <li>Precio: U$S ${elem.price}</li>
-                    <li>Descripción: ${elem.description}</li>
-                </ul>
-            </div>`)
-            }).join('');
-        document.getElementById('history').innerHTML = html;
-
-        
-    }
-
-
-
     function addMessage(e) {
         const mensaje = {
-            author: document.getElementById('username').value,
+            author: document.getElementById('email').value,
             text: document.getElementById('texto').value
         };
         socket.emit('new-message', mensaje);
         return false;
-    }
-    
-    function addProduct(e) {
-        socket.emit('new-product', newProduct);
-        return false;
-
     }
         
 </script>

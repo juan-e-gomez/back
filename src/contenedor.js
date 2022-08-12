@@ -27,9 +27,9 @@ export default class Contenedor {
     save = async(item) => {
         let items = await this.getAll();
         if(items.length > 0){
-            item.id = items[items.length-1].id + 1;
+            item.pid = items[items.length-1].pid + 1;
         }else{
-            item.id = 1;
+            item.pid = 1;
         }
         items.push(item);
         let content = JSON.stringify(items);
@@ -41,7 +41,7 @@ export default class Contenedor {
     modify = async(item) => {
         try{
             let items = await this.getAll();
-            let index = items.findIndex(p => p.id === item.id);
+            let index = items.findIndex(p => p.pid === item.pid);
             if(index>-1){
                 items[index] = item;
                 await fs.promises.writeFile(path, JSON.stringify(items, null, '\t'));
@@ -52,10 +52,10 @@ export default class Contenedor {
     }
     
 
-    getById = async(id) => {
+    getById = async(pid) => {
         try{
             let items = await this.getAll();
-            let searchedItem = items.find(p => p.id === id);
+            let searchedItem = items.find(p => p.pid === pid);
             if(!searchedItem){
                 return 'Producto no encontrado';
             }
@@ -67,16 +67,16 @@ export default class Contenedor {
     }
 
 
-    deleteById = async(id) => {
+    deleteById = async(pid) => {
         try{
             let items = await this.getAll();
-            let deleteItem = items.find(p => p.id === id);
+            let deleteItem = items.find(p => p.pid === pid);
             if(!deleteItem){
                 return 'Producto no encontrado';
             }
             let index = items.indexOf(deleteItem);
 
-            console.log(`Deleting ${id}`)
+            console.log(`Deleting ${pid}`)
 
             items.splice(index,1);
             await fs.promises.writeFile(path, JSON.stringify(items, null, '\t'));

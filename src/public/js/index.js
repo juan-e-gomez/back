@@ -1,5 +1,3 @@
-import { Socket } from "socket.io";
-
 let allitemsform = document.getElementById('delete-all-items-form');
 
 allitemsform.addEventListener('submit', (e) => {
@@ -24,9 +22,9 @@ let deleteitemform = document.getElementById('delete-item-form');
 
 deleteitemform.addEventListener('submit', (e) => {
     e.preventDefault();
-    let id = document.getElementById('delete-item-id')
-    let parsedId = parseInt(id.value);
-    fetch(`/products/${parsedId}`, {
+    let pid = document.getElementById('delete-item-id')
+    let parsedPid = parseInt(pid.value);
+    fetch(`/products/${parsedPid}`, {
         method: 'DELETE'
     })
     .then(data => {
@@ -42,5 +40,3 @@ deleteitemform.addEventListener('submit', (e) => {
     );
 }
 );
-
-

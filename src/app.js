@@ -1,9 +1,11 @@
 import usersRouter from './routes/users.router.js';
 import productsRouter from './routes/products.router.js';
+import viewsRouter from './routes/views.router.js'
+import cartsRouter from './routes/carts.router.js';
 import { createRequire } from 'module';
 import __dirname from './utils.js';
 import handlebars from 'express-handlebars';
-import viewsRouter from './routes/views.router.js'
+
 
 const require = createRequire(import.meta.url);
 
@@ -24,10 +26,14 @@ app.use(express.json());
 const products = require('./products.json');
 console.log(products);
 
+const carts = require('./carts.json');
+console.log(carts);
+
+
 const messages = [
-    { author : 'John', message : 'Hello' },
-    { author : 'Mary', message : 'Hi' },
-    { author : 'Peter', message : 'How are you?' },
+    { author : 'John', text : 'Hello' },
+    { author : 'Mary', text : 'Hi' },
+    { author : 'Peter', text : 'How are you?' },
 ];
 
 httpServer.listen(port, () => {
@@ -42,16 +48,7 @@ io.on('connection', function(socket) {
         messages.push(data);
         io.sockets.emit('messages', messages);
     }
-    );
-
-    socket.emit('products', products);
-
-    socket.on('new-product', data => {
-        products.push(data);
-        io.sockets.emit('products', products);
-    }
-    );
-    
+    );    
 });
 
 app.set('views', __dirname+'/views');
@@ -65,17 +62,23 @@ app.set('views',__dirname+'/views');
 
 app.use('/users', usersRouter);
 app.use('/products', productsRouter);
+app.use('/carts', cartsRouter);
 app.use('/',viewsRouter);
 
 app.get('/', (req, res) => {
     res.sendFile('home.ejs', {root: __dirname + '/views'});
-    res.send(products);
+    res.send(products, carts);
 }
 );
 
 app.get("/products", (req, res) => {
     res.send(products);
 });
+
+app.get("/carts", (req, res) => {
+    res.send(carts);
+}
+);
 
 app.get("/randomproduct", (req, res) => {
     let random = Math.floor(Math.random() * products.length);

@@ -21,27 +21,27 @@ router.get('/', (req, res) => {
     getAll();
 });
 
-router.get('/:id', (req, res) => {
-    let id = req.params.id;
-    let parsedId = parseInt(id);
-    let getById = async(parsedId) => {
+router.get('/:pid', (req, res) => {
+    let pid = req.params.pid;
+    let parsedPid = parseInt(pid);
+    let getByPid = async(parsedPid) => {
         try{
             let contenedor = new Contenedor();
-            let item = await contenedor.getById(parsedId);
+            let item = await contenedor.getById(parsedPid);
             res.send(item);
         }
         catch(error){
             res.send('Producto no encontrado');
         }
     }
-    getById(parsedId);
+    getByPid(parsedPid);
 });
 
 router.post('/', (req, res) => {
-    let id = products.length+1;
-    let parsedId = parseInt(id);
+    let pid = products.length+1;
+    let parsedPid = parseInt(pid);
     let newProduct = {
-        id: parsedId,
+        pid: parsedPid,
         title: req.body.title,
         price: req.body.price,
         description: req.body.description
@@ -61,11 +61,11 @@ router.post('/', (req, res) => {
 );
 
 
-router.put('/:id', (req, res) => {
-    let id = req.params.id;
-    let parsedId = parseInt(id);
+router.put('/:pid', (req, res) => {
+    let pid = req.params.pid;
+    let parsedPid = parseInt(pid);
     let modifyProduct = {
-        id: parsedId,
+        pid: parsedPid,
         title: req.body.title,
         price: req.body.price,
         description: req.body.description,
@@ -84,16 +84,16 @@ router.put('/:id', (req, res) => {
 });
 
 
-router.delete('/:id', (req, res) => {
-    let id = req.params.id;
-    let parsedId = parseInt(id);
-    let deleteProduct = async(parsedId) => {
+router.delete('/:pid', (req, res) => {
+    let pid = req.params.pid;
+    let parsedPid = parseInt(pid);
+    let deleteProduct = async(parsedPid) => {
         try{
             let contenedor = new Contenedor();
             let items = await contenedor.getAll();
-            let index = items.findIndex(p => p.id === parsedId);
+            let index = items.findIndex(p => p.pid === parsedPid);
             if(index>-1){
-                await contenedor.deleteById(parsedId);
+                await contenedor.deleteById(parsedPid);
                 res.send('Producto eliminado');
             }else{
                 res.send('Producto no encontrado');
@@ -102,7 +102,7 @@ router.delete('/:id', (req, res) => {
             console.log(error);
         }
     }
-    deleteProduct(parsedId);
+    deleteProduct(parsedPid);
 }
 );
 

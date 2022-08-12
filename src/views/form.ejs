@@ -10,34 +10,33 @@
     
     productform.addEventListener('submit', (e) => {
         e.preventDefault();
-        
-        newProduct = {
-            title: document.getElementById('title').value,
-            price: document.getElementById('price').value,
-            description: document.getElementById('description').value
+
+        let productinfo = {
+            title: productform.title.value,
+            price: productform.price.value,
+            description: productform.description.value
         };
-        
-        if(title.length > 0 && price.length > 0 && description.length > 0) {
+
+        if(productinfo.title.length > 0 && productinfo.price.length > 0 && productinfo.description.length > 0) {
             fetch('/products', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    title: newProduct.title,
-                    price: newProduct.price,
-                    description: newProduct.description
-                })
+                body: 
+                    JSON.stringify(productinfo)
             })
             .then(res => 
                 res.json()
             )
 
             .catch(err => {
-                console.log(err);
-            }
-            );
+                console.log(err)
+            } )
+        } else {
+            alert('Todos los campos son obligatorios');
         }
-    }
-    );
+    } )
+
+
 </script>
