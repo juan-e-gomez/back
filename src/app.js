@@ -18,6 +18,7 @@ const app = express();
 const httpServer = new HTTPServer(app);
 const io = new IOServer(httpServer);
 const port = 8080;
+const admin = false;
 
 app.use(express.static(__dirname + '/public/'));
 app.use(express.urlencoded({ extended: true }));
