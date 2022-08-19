@@ -5,6 +5,9 @@ import cartsRouter from './routes/carts.router.js';
 import { createRequire } from 'module';
 import __dirname from './utils.js';
 import handlebars from 'express-handlebars';
+import db from '../knex/options/sqlbase.js';
+
+
 
 
 const require = createRequire(import.meta.url);
@@ -30,6 +33,23 @@ console.log(products);
 const carts = require('./carts.json');
 console.log(carts);
 
+let users = [
+    {
+        first_name: "John",
+        last_name: "Doe",
+        age: 30
+    },
+    {
+        first_name: "Jane",
+        last_name: "Doe",
+        age: 25
+    },
+    {
+        first_name: "John",
+        last_name: "Smith",
+        age: 40
+    }
+]
 
 const messages = [
     { author : 'john@gmail.com', text : 'Hello' },
@@ -94,6 +114,15 @@ app.get('/hello', (req, res) => {
 
 app.get('/urlparam', (req, res) => {
     res.send(req.query);
+});
+
+app.get('/users', async(req, res) => {
+    try {
+        let users = await db('users').select('*');
+        res.send(users);
+    } catch (error) {
+        res.status(500).send(error);
+    }
 });
 
 /* const template = handlebars.compile('<h1>{{message}}</h1>');

@@ -7,8 +7,13 @@ router.get('/', (req, res) => {
 
 })
 
-router.post('/', (req, res) => {
-
+router.post('/', async(req, res) => {
+    try {
+        let user = await db('users').insert(req.body);
+        res.send(user);
+    } catch (error) {
+        res.status(500).send(error);
+    }
 })
 
 router.put('/:uid', (req, res) => {
