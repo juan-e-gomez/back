@@ -7,7 +7,7 @@
     </div>
     <div style="align-items: center; display: flex; justify-content: center;">
         <form id="delete-item-form">
-            <input type="number" id="delete-item-id" placeholder="ID">
+            <input type="number" id="pid" placeholder="ID">
             <input type="submit" value="Eliminar">
         </form>
     </div>
@@ -38,9 +38,10 @@
     function render (data) {
         const html = data.map((elem, index) => {
             return (`<div>
-                <strong>${elem.author}</strong>:
-                <em>${currenttime.getHours()}:${currenttime.getMinutes()}:${currenttime.getSeconds()}</em>
-                <em>${elem.text}</em></div>`)
+                        <em>${currenttime.getHours()}:${currenttime.getMinutes()}:${currenttime.getSeconds()}</em>
+                        <strong>${elem.author}</strong>:
+                        <em>${elem.text}</em>
+                    </div>`)
             }).join('');
         document.getElementById('messages').innerHTML = html;
     }
@@ -50,13 +51,20 @@
     });
 
     function addMessage(e) {
-        const mensaje = {
-            author: document.getElementById('email').value,
-            text: document.getElementById('texto').value
-        };
-        socket.emit('new-message', mensaje);
-        return false;
+        // if input fields not empty
+        if (e.email.value && e.texto.value) {
+            // send data to server
+            const mensaje = {
+                author: document.getElementById('email').value,
+                text: document.getElementById('texto').value
+            };
+            socket.emit('new-message', mensaje);
+            return false;
+        } else {
+            alert('Please fill all fields');
+        }
     }
+
         
 </script>
 

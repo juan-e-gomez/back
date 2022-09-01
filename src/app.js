@@ -4,14 +4,11 @@ import viewsRouter from './routes/views.router.js'
 import cartsRouter from './routes/carts.router.js';
 import { createRequire } from 'module';
 import __dirname from './utils.js';
-import handlebars from 'express-handlebars';
-import db from '../knex/options/sqlbase.js';
-
-
+import sqlite3db from '../knex/options/sqlite3.js';
+import mysqldb from '../knex/options/mysql.js';
 
 
 const require = createRequire(import.meta.url);
-
 
 const express = require('express');
 const { Server: HTTPServer } = require('http');
@@ -27,29 +24,6 @@ app.use(express.static(__dirname + '/public/'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const products = require('./products.json');
-console.log(products);
-
-const carts = require('./carts.json');
-console.log(carts);
-
-let users = [
-    {
-        first_name: "John",
-        last_name: "Doe",
-        age: 30
-    },
-    {
-        first_name: "Jane",
-        last_name: "Doe",
-        age: 25
-    },
-    {
-        first_name: "John",
-        last_name: "Smith",
-        age: 40
-    }
-]
 
 const messages = [
     { author : 'john@gmail.com', text : 'Hello' },
@@ -68,18 +42,10 @@ io.on('connection', function(socket) {
     socket.on('new-message', data => {
         messages.push(data);
         io.sockets.emit('messages', messages);
-    }
-    );    
-});
+    });});
 
 app.set('views', __dirname+'/views');
 app.set('view engine', 'ejs');
-// app.set('view engine','pug');
-
-// app.engine('handlebars',handlebars.engine());
-app.set('views',__dirname+'/views');
-// app.set('view engine','handlebars')
-
 
 app.use('/users', usersRouter);
 app.use('/products', productsRouter);
@@ -89,42 +55,34 @@ app.use('/',viewsRouter);
 app.get('/', (req, res) => {
     res.sendFile('home.ejs', {root: __dirname + '/views'});
     res.send(products, carts);
-}
-);
-
-app.get("/products", (req, res) => {
-    res.send(products);
 });
+
+app.get("/products",async (req, res) => {
+    try{
+        const products = await ProductsManager.getProducts();
+        res.send(products);
+    } catch(err) {
+        console.log(err);
+    } finally {
+        ProductsManager.db.destroy();
+    }
+});
+
+
+
+
+
+
 
 app.get("/carts", (req, res) => {
     res.send(carts);
-}
-);
+});
 
 app.get("/randomproduct", (req, res) => {
     let random = Math.floor(Math.random() * products.length);
     res.send(products[random]);
 });
 
-app.get('/hello', (req, res) => {
-    res.render('hello.pug', {
-        message: 'Probando pug'
-    });
-});
-
 app.get('/urlparam', (req, res) => {
     res.send(req.query);
 });
-
-app.get('/users', async(req, res) => {
-    try {
-        let users = await db('users').select('*');
-        res.send(users);
-    } catch (error) {
-        res.status(500).send(error);
-    }
-});
-
-/* const template = handlebars.compile('<h1>{{message}}</h1>');
-const html = template({ message: 'Hello world!' });
-document.querySelector('span').innerHTML = html; */

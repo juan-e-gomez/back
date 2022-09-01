@@ -1,152 +1,127 @@
 import { Router } from 'express';
 import { createRequire } from 'module';
-import Contenedor from '../contenedor.js';
+import ProductsManager from '../managers/productsmanager.js';
 
 const require = createRequire(import.meta.url);
 const router = Router();
-const products = require('../products.json');
 
-//console.log(products);
-
+// products table from mysql
 router.get('/', (req, res) => {
-    let getAll = async() => {
-        try{
-            let contenedor = new Contenedor();
-            let items = await contenedor.getAll();
-            res.send(items);
-        }catch(error){
-            console.log(error);
-        }
+    ProductsManager.getProducts().then((products) => {
+        res.send(products);
+    }).catch((err) => {
+        console.log(err);
+    }).finally(() => {
+        ProductsManager.db.destroy();
     }
-    getAll();
-});
+    );
+})
+
+// get product from mysql using pid
 
 router.get('/:pid', (req, res) => {
     let pid = req.params.pid;
     let parsedPid = parseInt(pid);
-    let getByPid = async(parsedPid) => {
-        try{
-            let contenedor = new Contenedor();
-            let item = await contenedor.getById(parsedPid);
-            res.send(item);
-        }
-        catch(error){
-            res.send('Producto no encontrado');
-        }
+    let getById = ProductsManager.getProduct(parsedPid);
+    getById.then((product) => {
+        res.send(product);
+    }).catch((err) => {
+        res.send('Product not found');
+    }).finally(() => {
+        ProductsManager.db.destroy();
     }
-    getByPid(parsedPid);
-});
+    );
+})
+
+
+// insert product into mysql db
 
 router.post('/', (req, res) => {
     const admin = true;
-    
-    if (admin === true) {    
-        let pid = products.length+1;
-        let parsedPid = parseInt(pid);
-        let newProduct = {
-            pid: parsedPid,
-            title: req.body.title,
-            price: req.body.price,
-            description: req.body.description
-        };
-        let newItem = async() => {
-            try{
-                let contenedor = new Contenedor();
-                let item = await contenedor.save(newProduct);
-                res.send(item);
-            }
-            catch(error){
-                res.send('Error al guardar el producto');
-            }
+
+    if (admin === true) {
+        let product = req.body;
+        ProductsManager.insertProduct(product).then((product) => {
+            res.send(product);
+        }).catch((err) => {
+            console.log(err);
+        }).finally(() => {
+            ProductsManager.db.destroy();
         }
-        newItem();
+        );
     } else {
-        res.send('No tiene permisos para realizar esta acción');
+        res.send('You are not authorized to add a product');
     }
-});
+})
 
-
+// modify product in mysql db
 
 router.put('/:pid', (req, res) => {
     const admin = true;
 
     if (admin === true) {
-
         let pid = req.params.pid;
+        let product = req.body;
         let parsedPid = parseInt(pid);
-        let modifyProduct = {
-            pid: parsedPid,
-            title: req.body.title,
-            price: req.body.price,
-            description: req.body.description,
-        }
-        if(!modifyProduct) return res.status(404).send('El producto no existe');
-        let modify = async(modifyProduct) => {
-            try{
-                let contenedor = new Contenedor();
-                await contenedor.modify(modifyProduct);
-                res.send(modifyProduct);
-            }catch(error){
-                console.log(error);
+        ProductsManager.updateProduct(parsedPid, product).then((product) => {
+            res.send(product);
+            if(!product) {
+                res.send('Product not found');
             }
+        }).catch((err) => {
+            console.log(err);
+        }).finally(() => {
+            ProductsManager.db.destroy();
         }
-        modify(modifyProduct);
+        );
     } else {
-        res.send('No tiene permisos para realizar esta acción');
+        res.send('You are not authorized to modify a product');
     }
-});
+})
 
+// delete product from mysql db
 
 router.delete('/:pid', (req, res) => {
     const admin = true;
 
     if (admin === true) {
-
         let pid = req.params.pid;
         let parsedPid = parseInt(pid);
-        let deleteProduct = async(parsedPid) => {
-            try{
-                let contenedor = new Contenedor();
-                let items = await contenedor.getAll();
-                let index = items.findIndex(p => p.pid === parsedPid);
-                if(index>-1){
-                    await contenedor.deleteById(parsedPid);
-                    res.send('Producto eliminado');
-                }else{
-                    res.send('Producto no encontrado');
-                }
-            }catch(error){
-                console.log(error);
+        ProductsManager.deleteProduct(parsedPid).then((product) => {
+            res.send(product);
+            if(!product) {
+                res.send('Product not found');
             }
+        }).catch((err) => {
+            console.log(err);
+        }).finally(() => {
+            ProductsManager.db.destroy();
         }
-        deleteProduct(parsedPid);
+        );
     } else {
-        res.send('No tiene permisos para realizar esta acción');
+        res.send('You are not authorized to delete a product');
     }
-});
+})
 
+
+// delete all products from mysql db
 
 router.delete('/', (req, res) => {
     const admin = true;
 
     if (admin === true) {
-
-        let deleteAll = async() => {
-            try{
-                let contenedor = new Contenedor();
-                await contenedor.deleteAll();
-                res.send('Todos los productos fueron eliminados');
-                console.log('Todos los productos fueron eliminados');
-            }
-            catch(error){
-                console.log(error);
-            }
+        ProductsManager.deleteTable().then((products) => {
+            res.send(products);
+        }).catch((err) => {
+            console.log(err);
+        }).finally(() => {
+            ProductsManager.db.destroy();
         }
-        deleteAll();
+        );
     } else {
-        res.send('No tiene permisos para realizar esta acción');
+        res.send('You are not authorized to delete all products');
     }
-});
+})
 
 
 export default router;

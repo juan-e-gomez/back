@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { createRequire } from 'module';
-import Contenedor from '../contenedor.js';
+import Contenedor from '../managers/productsmanager.js';
 
 const require = createRequire(import.meta.url);
 const router = Router();
